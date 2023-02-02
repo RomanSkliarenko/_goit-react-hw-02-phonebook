@@ -14,6 +14,15 @@ class App extends Component {
     filter: '',
   };
 
+  inputChangeHandler = (e) => {
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        [e.target.name]: e.target.value,
+      };
+    });
+  };
+
   submitHandler = (state) => {
     const alreadyInContacts = this.state.contacts.find((contact) => contact.name === state.name);
     if (alreadyInContacts) {
