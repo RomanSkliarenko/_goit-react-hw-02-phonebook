@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
 import ContactListMarkup from './contactListMarkup';
 import AddNewContact from './addNewContact';
+import FindContactByName from './findContactByName';
 
 class App extends Component {
   state = {
@@ -23,8 +24,8 @@ class App extends Component {
     });
   };
 
-  submitHandler = (state) => {
-    const alreadyInContacts = this.state.contacts.find((contact) => contact.name === state.name);
+  submitHandler = ({ name, number }) => {
+    const alreadyInContacts = this.state.contacts.find((contact) => contact.name === name);
     if (alreadyInContacts) {
       alert(`${alreadyInContacts.name} is already in contacts!`);
       return;
@@ -32,7 +33,7 @@ class App extends Component {
     this.setState((prevState) => {
       return {
         ...prevState,
-        contacts: [...prevState.contacts, { name:state.name, id: nanoid(), number: state.number }],
+        contacts: [...prevState.contacts, { name: name, id: nanoid(), number: number }],
       };
     });
   };
@@ -45,26 +46,11 @@ class App extends Component {
     return (
       <div>
         <h1>Phonebook</h1>
-        <AddNewContact onSubmit={this.submitHandler}/>
+        <AddNewContact onSubmit={this.submitHandler} />
         <h2>Contacts</h2>
-        {this.state.contacts.length > 0 && <><span>Find contact by name </span>
-          <input
-            name='filter'
-            type='text'
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            onChange={this.inputChangeHandler}
-          />
-        </>
-        }
+        {this.state.contacts.length > 0 && <FindContactByName inputChangeHandler={this.inputChangeHandler} />}
         <ul>
-          {
-            this.state.contacts.length > 0 && this.state.filter === '' ?
-              <ContactListMarkup contacts={this.state.contacts} deleteContactHandler={this.deleteContactHandler}
-                                 filter={this.state.filter} />
-              :
-              <ContactListMarkup contacts={this.state.contacts} deleteContactHandler={this.deleteContactHandler}
-                                 filter={this.state.filter} filteredContacts={true} />
-          }
+          <ContactListMarkup {...this.state} deleteContactHandler={this.deleteContactHandler} />
         </ul>
       </div>
     );

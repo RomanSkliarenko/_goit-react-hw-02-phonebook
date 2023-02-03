@@ -18,8 +18,7 @@ class AddNewContact extends Component {
   formSubmit = (e) => {
     e.preventDefault();
     this.props.onSubmit(this.state);
-    e.target.elements.name.value = '';
-    e.target.elements.number.value = '';
+    this.setState({ name: '', number: '' });
   };
 
   render() {
@@ -32,6 +31,7 @@ class AddNewContact extends Component {
             name='name'
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+            value={this.state.name}
             required
           />
         </label>
@@ -42,6 +42,7 @@ class AddNewContact extends Component {
             name='number'
             pattern='\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}'
             title='Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
+            value={this.state.number}
             required
           />
         </label>
