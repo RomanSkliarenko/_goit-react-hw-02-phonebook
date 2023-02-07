@@ -25,12 +25,25 @@ class App extends Component {
   };
 
   submitHandler = ({ name, number }) => {
-    const alreadyInContacts = this.state.contacts.find((contact) => contact.name === name);
+    const alreadyInContacts = this.state.contacts && this.state.contacts.find((contact) => contact.name === name);
     if (alreadyInContacts) {
       alert(`${alreadyInContacts.name} is already in contacts!`);
       return;
     }
+    if (alreadyInContacts === null) {
+      this.setState((prevState) => {
+        const updatedContacts = [{ name: name, id: nanoid(), number: number }];
+        localStorage.setItem('contactList', JSON.stringify(updatedContacts));
+        return {
+          ...prevState,
+          contacts: [updatedContacts],
+        };
+      });
+      return;
+    }
     this.setState((prevState) => {
+      const updatedContacts = [...prevState.contacts, { name: name, id: nanoid(), number: number }];
+      localStorage.setItem('contactList', JSON.stringify(updatedContacts));
       return {
         ...prevState,
         contacts: [...prevState.contacts, { name: name, id: nanoid(), number: number }],
@@ -39,8 +52,16 @@ class App extends Component {
   };
 
   deleteContactHandler = (id) => {
-    this.setState({ ...this.state, contacts: this.state.contacts.filter((contact) => contact.id !== id) });
+    this.setState((_) => {
+      const updatedContacts = this.state.contacts.filter((contact) => contact.id !== id);
+      localStorage.setItem('contactList', JSON.stringify(updatedContacts));
+      return { ...this.state, contacts: updatedContacts };
+    });
   };
+
+  componentDidMount() {
+    this.setState({ ...this.state, contacts: JSON.parse(localStorage.getItem('contactList')) });
+  }
 
   render() {
     return (
@@ -48,7 +69,8 @@ class App extends Component {
         <h1>Phonebook</h1>
         <AddNewContact onSubmit={this.submitHandler} />
         <h2>Contacts</h2>
-        {this.state.contacts.length > 0 && <FindContactByName inputChangeHandler={this.inputChangeHandler} />}
+        {this.state.contacts && this.state.contacts.length > 0 &&
+          <FindContactByName inputChangeHandler={this.inputChangeHandler} />}
         <ul>
           <ContactListMarkup {...this.state} deleteContactHandler={this.deleteContactHandler} />
         </ul>
