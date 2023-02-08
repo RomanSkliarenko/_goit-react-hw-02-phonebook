@@ -25,22 +25,8 @@ class App extends Component {
       alert(`${alreadyInContacts.name} is already in contacts!`);
       return;
     }
-    if (alreadyInContacts === null) {
-      this.setState((prevState) => {
-        const updatedContacts = [{ name: name, id: nanoid(), number: number }];
-        localStorage.setItem('contactList', JSON.stringify(updatedContacts));
-        return {
-          ...prevState,
-          contacts: [updatedContacts],
-        };
-      });
-      return;
-    }
     this.setState((prevState) => {
-      const updatedContacts = [...prevState.contacts, { name: name, id: nanoid(), number: number }];
-      localStorage.setItem('contactList', JSON.stringify(updatedContacts));
       return {
-        ...prevState,
         contacts: [...prevState.contacts, { name: name, id: nanoid(), number: number }],
       };
     });
@@ -49,14 +35,19 @@ class App extends Component {
   deleteContactHandler = (id) => {
     this.setState((_) => {
       const updatedContacts = this.state.contacts.filter((contact) => contact.id !== id);
-      localStorage.setItem('contactList', JSON.stringify(updatedContacts));
       return { ...this.state, contacts: updatedContacts };
     });
   };
 
   componentDidMount() {
-    const dataFromLocalStorage =  JSON.parse(localStorage.getItem('contactList'))
-    dataFromLocalStorage && this.setState({ ...this.state, contacts:dataFromLocalStorage });
+    const dataFromLocalStorage = JSON.parse(localStorage.getItem('contactList'));
+    dataFromLocalStorage && this.setState({ ...this.state, contacts: dataFromLocalStorage });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts.length !== this.state.contacts) {
+      localStorage.setItem('contactList', JSON.stringify(this.state.contacts));
+    }
   }
 
   render() {
