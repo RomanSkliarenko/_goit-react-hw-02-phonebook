@@ -2,7 +2,7 @@
   "name": "react-homework-template",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://RomanSkliarenko.github.io/_goit-react-hw-02-phonebook/",
+  "homepage": "https://RomanSkliarenko.github.io/_goit-react-hw-07-phonebook/",
   "dependencies": {
     "@redux-devtools/extension": "^3.2.5",
     "@reduxjs/toolkit": "^1.9.2",
