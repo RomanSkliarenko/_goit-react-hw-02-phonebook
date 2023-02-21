@@ -1,23 +1,52 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { addContact, deleteContact, fetchContacts } from '../operations/contacts';
 
 const contactSlice = createSlice({
   name: 'contacts',
-  initialState: [],
-  reducers: {
-    addContact: {
-      reducer: (state, { payload: { number, name, id } }) => [...state, { name, number, id }],
-      prepare: ({ number, name }) => ({
-          payload: {
-            id: nanoid(),
-            number,
-            name,
-          },
-        }),
-    },
-    deleteContact: (state, { payload }) => [...state.filter(({ id }) => id !== payload)],
+  initialState: {
+    contacts: [],
+    loading: false,
+    error: null,
   },
+  reducers: {},
+  extraReducers:
+    (builder) => {
+      builder.addCase(addContact.pending, (state) => {
+        state.loading = true;
+      });
+      builder.addCase(addContact.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.contacts = [...state.contacts, payload];
+      });
+      builder.addCase(addContact.rejected, (state, { payload }) => {
+        state.error = payload;
+        state.loading = false;
+      });
+      builder.addCase(fetchContacts.pending, (state) => {
+        state.loading = true;
+      });
+      builder.addCase(fetchContacts.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.contacts = [...payload];
+      });
+      builder.addCase(fetchContacts.rejected, (state, { payload }) => {
+        state.error = payload;
+        state.loading = false;
+      });
+      builder.addCase(deleteContact.pending, (state) => {
+        state.loading = true;
+      });
+      builder.addCase(deleteContact.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.contacts = [...state.contacts.filter(({ id }) => id !== payload.id)];
+      });
+      builder.addCase(deleteContact.rejected, (state, { payload }) => {
+        state.error = payload;
+        state.loading = false;
+      });
+    },
+
 });
 
 
-export const { addContact, deleteContact } = contactSlice.actions;
 export const contactReducer = contactSlice.reducer;

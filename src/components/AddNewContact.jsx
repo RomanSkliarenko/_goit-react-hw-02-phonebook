@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addContact } from '../redux/contact/contactSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../redux/operations/contacts';
+
 
 const AddNewContact = () => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-
-  const submitHandler = ({ name, number }) => {
-    dispatch(addContact({ name, number }));
-  };
+  const loading = useSelector((state) => state.contacts.loading);
 
   const inputChangeHandler = ({ target }) => {
     const { value, name } = target;
@@ -27,7 +25,7 @@ const AddNewContact = () => {
 
   const formSubmit = (e) => {
     e.preventDefault();
-    submitHandler({ name, number });
+    dispatch(addContact({ name, number }));
     setName('');
     setNumber('');
   };
@@ -56,7 +54,7 @@ const AddNewContact = () => {
           required
         />
       </label>
-      <button type='submit'>Add contact</button>
+      <button disabled={loading ? true : false} type='submit'>Add contact</button>
     </form>
   );
 };
