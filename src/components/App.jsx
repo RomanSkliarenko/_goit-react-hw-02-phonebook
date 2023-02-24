@@ -1,36 +1,24 @@
-import ContactListMarkup from './ContactListMarkup';
-import AddNewContact from './AddNewContact';
-import FindContactByName from './FindContactByName';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchContacts } from '../redux/operations/contacts';
-import { useEffect } from 'react';
-import Notiflix from 'notiflix';
+import { Route, Routes } from 'react-router-dom';
+import Header from './Header';
+import Contacts from './Contacts';
+import AuthForm from './AuthForm';
+import PrivateRoute from './PrivateRoute';
+import PublicRoute from './PublicRoute';
+import NotFound from './NotFound';
 
 
 const App = () => {
-  const contacts = useSelector(state => state.contacts.contacts);
-  const loading = useSelector(state => state.contacts.loading);
-  const error = useSelector(state => state.contacts.error);
-  const dispatch = useDispatch();
-
-  error && Notiflix.Notify.warning(`${error}`);
-
-  useEffect(() => {
-    dispatch(fetchContacts())
-  }, [dispatch]);
-
-
   return (
     <div>
-      {loading && <div className='loader'/>}
-      <h1>Phonebook</h1>
-      <AddNewContact />
-      <h2>Contacts</h2>
-      {contacts.length > 0 &&
-        <FindContactByName />}
-      <ul>
-        <ContactListMarkup />
-      </ul>
+      <Routes>
+        <Route path='/' element={<Header />}>
+          <Route path='/' element={<PrivateRoute component={<Contacts />} />} />
+          <Route path='/contacts' element={<PrivateRoute component={<Contacts />} />} />
+          <Route path='/register' element={<PublicRoute component={<AuthForm type={'register'} />} />} />
+          <Route path='/login' element={<PublicRoute component={<AuthForm type={'login'} />} />} />
+          <Route path='*' element={<NotFound />} />
+        </Route>
+      </Routes>
     </div>
   );
 };

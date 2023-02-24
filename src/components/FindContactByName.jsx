@@ -11,13 +11,14 @@ const FindContactByName = () => {
 
   return (
     <div>
-      <span>Find contact by name </span>
       <input
+        className='filterInput'
         name='filter'
         type='text'
         pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
         onChange={inputChangeHandler}
         value={filter}
+        placeholder='Enter name to find DUDE and call his mom xD'
       />
     </div>
   );

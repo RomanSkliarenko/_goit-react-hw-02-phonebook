@@ -8,7 +8,11 @@ const contactSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearContacts(state) {
+      state.contacts = []
+    },
+  },
   extraReducers:
     (builder) => {
       builder.addCase(addContact.pending, (state) => {
@@ -48,5 +52,5 @@ const contactSlice = createSlice({
 
 });
 
-
+export const {clearContacts} = contactSlice.actions
 export const contactReducer = contactSlice.reducer;

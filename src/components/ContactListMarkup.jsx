@@ -4,9 +4,8 @@ import { nanoid } from '@reduxjs/toolkit';
 
 const ContactListMarkup = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.contacts);
+  const { contacts, loading } = useSelector(state => state.contacts);
   const filter = useSelector(state => state.filter);
-  const loading = useSelector(state => state.contacts.loading);
   const filteredContacts = contacts.filter(({ name }) => name.toLowerCase().includes(filter.toLowerCase()));
 
   const deleteContactHandler = async (id) => {
@@ -16,9 +15,9 @@ const ContactListMarkup = () => {
     <>
       {
         filteredContacts.map(({ name, id, number }) =>
-          <li key={nanoid()}>{name}
-            <b>:</b> {number}
-            <button disabled={loading ? true : false} onClick={() => deleteContactHandler(id)}>Delete</button>
+          <li className='contactItem' key={nanoid()}>
+            <div className='contactInfo'><span>{name}</span><span>{number}</span></div>
+            <button className='deleteButton' disabled={loading} onClick={() => deleteContactHandler(id)}></button>
           </li>)
       }
     </>
